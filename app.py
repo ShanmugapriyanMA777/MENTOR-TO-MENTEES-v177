@@ -258,7 +258,21 @@ def send_announcement():
 @app.route("/health")
 def health():
     return jsonify({"status": "ok"})
+import smtplib
+from email.mime.text import MIMEText
 
+def send_email(to_email, subject, message):
+
+    msg = MIMEText(message)
+    msg['Subject'] = subject
+    msg['From'] = os.environ.get("EMAIL")
+    msg['To'] = to_email
+
+    server = smtplib.SMTP("smtp.gmail.com", 587)
+    server.starttls()
+    server.login(os.environ.get("EMAIL"), os.environ.get("EMAIL_PASS"))
+    server.send_message(msg)
+    server.quit()
 
 # ─── Run ──────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
